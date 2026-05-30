@@ -1,172 +1,340 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+import { useState, useEffect } from 'react'
 import './App.css'
 
+// API
+import {
+  getZones,
+  getSearchExamples,
+  getProperties,
+  createProperty,
+  aiSearch,
+  aiCompare,
+  aiEnhanceListing,
+  ragReindex,
+  getLeads,
+  getImports,
+  runImport,
+  loginAdmin,
+  logoutAdmin,
+  getCurrentUser,
+  getClientMode
+} from './api'
+
+// Shared Components
+import Header from './components/Header'
+import Footer from './components/Footer'
+import PropertyDetailModal from './components/PropertyDetailModal'
+
+// Tab Views
+import AISearchTab from './tabs/AISearchTab'
+import ExploreTab from './tabs/ExploreTab'
+import CompareTab from './tabs/CompareTab'
+import EnhanceTab from './tabs/EnhanceTab'
+import AdminTab from './tabs/AdminTab'
+
 function App() {
-  const [count, setCount] = useState(0)
+  // ─── Navigation ──────────────────────────────────────────────
+  const [currentTab, setCurrentTab] = useState('search')
+  const [clientMode, setClientMode] = useState('SIMULATION')
+  const [darkMode, setDarkMode] = useState(() => localStorage.getItem('mita_dark') === 'true')
 
+  // ─── Auth ────────────────────────────────────────────────────
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false)
+  const [adminUser, setAdminUser] = useState(null)
+  const [loginEmail, setLoginEmail] = useState('admin@mita.ai')
+  const [loginPassword, setLoginPassword] = useState('admin123')
+  const [loginError, setLoginError] = useState('')
+
+  // ─── Search ──────────────────────────────────────────────────
+  const [searchQuery, setSearchQuery] = useState('')
+  const [searchExamples, setSearchExamples] = useState([])
+  const [isSearching, setIsSearching] = useState(false)
+  const [searchResult, setSearchResult] = useState(null)
+
+  // ─── Explore ─────────────────────────────────────────────────
+  const [properties, setProperties] = useState([])
+  const [zones, setZones] = useState([])
+  const [exploreLoading, setExploreLoading] = useState(false)
+  const [filters, setFilters] = useState({
+    zone: '', maxPrice: '', propertyType: '', usageType: '', minAreaM2: '', hasGarage: false, petsAllowed: false
+  })
+
+  // ─── Compare ─────────────────────────────────────────────────
+  const [selectedForComparison, setSelectedForComparison] = useState([])
+  const [compareQuery, setCompareQuery] = useState('¿Cuál de estas opciones me conviene más si quiero abrir una cafetería pequeña y necesito buena visibilidad?')
+  const [isComparing, setIsComparing] = useState(false)
+  const [comparisonResult, setComparisonResult] = useState(null)
+
+  // ─── Enhance ─────────────────────────────────────────────────
+  const [rawEnhanceText, setRawEnhanceText] = useState('alquilo local zona norte 800$ ideal negocio avenida transitada bano privado consultas whatsapp')
+  const [isEnhancing, setIsEnhancing] = useState(false)
+  const [enhancedResult, setEnhancedResult] = useState(null)
+
+  // ─── Admin ───────────────────────────────────────────────────
+  const [leads, setLeads] = useState([])
+  const [imports, setImports] = useState([])
+  const [sources, setSources] = useState([])
+  const [importUrl, setImportUrl] = useState('https://facebook.com/marketplace/santacruz/alquileres')
+  const [importLimit, setImportLimit] = useState(15)
+  const [isImporting, setIsImporting] = useState(false)
+  const [ragStatus, setRagStatus] = useState('')
+
+  // ─── Detail Modal ─────────────────────────────────────────────
+  const [selectedProperty, setSelectedProperty] = useState(null)
+
+  // ─── Dark mode persistence ─────────────────────────────
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light')
+    localStorage.setItem('mita_dark', darkMode)
+  }, [darkMode])
+
+  const toggleDarkMode = () => setDarkMode(prev => !prev)
+
+  // ─── Bootstrap ───────────────────────────────────────────────
+  useEffect(() => {
+    setClientMode(getClientMode())
+    getZones().then(data => setZones(data.zones))
+    getSearchExamples().then(data => setSearchExamples(data.examples))
+
+    const token = localStorage.getItem('mita_token')
+    if (token) {
+      getCurrentUser()
+        .then(res => { setIsAdminLoggedIn(true); setAdminUser(res.user) })
+        .catch(() => localStorage.removeItem('mita_token'))
+    }
+
+    loadProperties()
+  }, [])
+
+  useEffect(() => {
+    if (isAdminLoggedIn && currentTab === 'admin') loadAdminData()
+  }, [isAdminLoggedIn, currentTab])
+
+  useEffect(() => {
+    loadProperties()
+  }, [filters])
+
+  // ─── Helpers ─────────────────────────────────────────────────
+  const loadProperties = () => {
+    setExploreLoading(true)
+    getProperties(filters)
+      .then(res => { setProperties(res.data); setExploreLoading(false) })
+      .catch(() => setExploreLoading(false))
+  }
+
+  const loadAdminData = () => {
+    getLeads().then(res => setLeads(res.data))
+    getImports().then(res => setImports(res.data))
+  }
+
+  // ─── Search Handlers ─────────────────────────────────────────
+  const handleAISearch = (e, customQuery) => {
+    if (e) e.preventDefault()
+    const q = customQuery || searchQuery
+    if (!q.trim()) return
+    setIsSearching(true)
+    aiSearch(q)
+      .then(res => { setSearchResult(res); setIsSearching(false) })
+      .catch(() => setIsSearching(false))
+  }
+
+  // ─── Compare Handlers ────────────────────────────────────────
+  const toggleComparison = (property) => {
+    const exists = selectedForComparison.some(p => p.id === property.id)
+    if (exists) {
+      setSelectedForComparison(prev => prev.filter(p => p.id !== property.id))
+    } else {
+      if (selectedForComparison.length >= 3) {
+        alert('Solo puedes seleccionar un máximo de 3 propiedades para comparar.')
+        return
+      }
+      setSelectedForComparison(prev => [...prev, property])
+    }
+  }
+
+  const triggerAIComparison = () => {
+    if (selectedForComparison.length < 2) {
+      alert('Selecciona al menos 2 propiedades para comparar.')
+      return
+    }
+    setIsComparing(true)
+    setCurrentTab('compare')
+    aiCompare(compareQuery, selectedForComparison.map(p => p.id))
+      .then(res => { setComparisonResult(res); setIsComparing(false) })
+      .catch(() => setIsComparing(false))
+  }
+
+  // ─── Enhance Handlers ────────────────────────────────────────
+  const handleEnhancement = (e) => {
+    e.preventDefault()
+    if (!rawEnhanceText.trim()) return
+    setIsEnhancing(true)
+    aiEnhanceListing(rawEnhanceText)
+      .then(res => { setEnhancedResult(res); setIsEnhancing(false) })
+      .catch(() => setIsEnhancing(false))
+  }
+
+  const saveEnhancedDraft = () => {
+    if (!enhancedResult) return
+    createProperty(enhancedResult.propertyDraft)
+      .then(() => {
+        alert('¡Borrador guardado en la base de datos de Mita!')
+        loadProperties()
+        setCurrentTab('explore')
+      })
+      .catch(err => alert(`Error al guardar: ${err.message}`))
+  }
+
+  // ─── Admin Handlers ──────────────────────────────────────────
+  const handleFilterChange = (e) => {
+    const { name, value, type, checked } = e.target
+    setFilters(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }))
+  }
+
+  const resetFilters = () => {
+    setFilters({ zone: '', maxPrice: '', propertyType: '', usageType: '', minAreaM2: '', hasGarage: false, petsAllowed: false })
+  }
+
+  const handleAdminLogin = (e) => {
+    e.preventDefault()
+    setLoginError('')
+    loginAdmin(loginEmail, loginPassword)
+      .then(res => { setIsAdminLoggedIn(true); setAdminUser(res.user) })
+      .catch(err => setLoginError(err.message))
+  }
+
+  const handleAdminLogout = () => {
+    logoutAdmin()
+    setIsAdminLoggedIn(false)
+    setAdminUser(null)
+  }
+
+  const handleRunImport = (e) => {
+    e.preventDefault()
+    setIsImporting(true)
+    runImport(1, importUrl, Number(importLimit))
+      .then(() => { setIsImporting(false); loadAdminData(); loadProperties(); alert('¡Importación completada!') })
+      .catch(() => setIsImporting(false))
+  }
+
+  const triggerReindex = () => {
+    setRagStatus('Reindexando vectores semánticos...')
+    ragReindex()
+      .then(res => { setRagStatus(res.message); setTimeout(() => setRagStatus(''), 4000) })
+      .catch(err => setRagStatus(`Error: ${err.message}`))
+  }
+
+  // ─── Modal Handlers ──────────────────────────────────────────
+  const openDetailModal = (property) => setSelectedProperty(property)
+  const closeDetailModal = () => setSelectedProperty(null)
+
+  // ─── Render ──────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-300 font-sans selection:bg-red-500/30 selection:text-red-200 relative overflow-hidden flex flex-col items-center justify-between">
-      {/* Background glow effects */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-red-500/10 blur-[130px] rounded-full pointer-events-none"></div>
-      <div className="absolute bottom-0 left-1/3 w-[400px] h-[400px] bg-rose-500/5 blur-[120px] rounded-full pointer-events-none"></div>
+    <div className="min-h-screen flex flex-col justify-between selection:bg-[#4FA75A]/20 selection:text-[#2E7D43]">
 
-      {/* Main Container */}
-      <div className="w-full max-w-5xl px-6 py-12 flex flex-col items-center justify-center flex-grow z-10">
-        
-        {/* Center / Hero Section */}
-        <section id="center" className="flex flex-col items-center text-center gap-8 max-w-2xl py-12">
-          {/* Logo Showcase with animations */}
-          <div className="relative w-48 h-48 flex items-center justify-center">
-            <img 
-              src={heroImg} 
-              className="w-36 h-auto relative z-0 filter drop-shadow-[0_0_20px_rgba(239,68,68,0.2)] transition-all duration-700 hover:scale-105" 
-              alt="Mita Logo Base" 
-            />
-            <img 
-              src={reactLogo} 
-              className="absolute top-6 left-14 z-10 w-9 h-9 animate-[spin_12s_linear_infinite] filter drop-shadow-[0_0_10px_rgba(6,182,212,0.4)]" 
-              alt="React logo" 
-            />
-            <img 
-              src={viteLogo} 
-              className="absolute bottom-6 right-14 z-10 w-8 h-8 filter drop-shadow-[0_0_10px_rgba(234,179,8,0.4)] transition-transform hover:scale-110" 
-              alt="Vite logo" 
-            />
-          </div>
+      {/* Ambient background blurs */}
+      <div className="fixed blur-[70px] opacity-45 z-[-1] pointer-events-none w-[360px] h-[360px] rounded-full bg-[#7EE6D8] top-20 -left-[120px]" />
+      <div className="fixed blur-[70px] opacity-45 z-[-1] pointer-events-none w-[320px] h-[320px] rounded-full bg-[#B8A7FF] top-[120px] -right-[100px]" />
+      <div className="fixed blur-[70px] opacity-35 z-[-1] pointer-events-none w-[280px] h-[280px] rounded-full bg-[#A8D89D] bottom-20 left-[45%]" />
 
-          <div>
-            <h1 className="text-5xl md:text-6xl font-black tracking-tight bg-gradient-to-r from-red-500 via-rose-500 to-orange-500 bg-clip-text text-transparent mb-4">
-              Get started
-            </h1>
-            <p className="text-zinc-400 text-lg leading-relaxed">
-              Edit <code className="px-2 py-0.5 bg-zinc-900/80 border border-zinc-800 text-red-400 rounded font-mono text-sm">src/App.jsx</code> and save to test <code className="px-2 py-0.5 bg-zinc-900/80 border border-zinc-800 text-rose-400 rounded font-mono text-sm">HMR</code>
-            </p>
-          </div>
+      <Header
+        currentTab={currentTab}
+        setCurrentTab={setCurrentTab}
+        selectedCompareCount={selectedForComparison.length}
+        clientMode={clientMode}
+        darkMode={darkMode}
+        toggleDarkMode={toggleDarkMode}
+      />
 
-          <button
-            type="button"
-            className="px-8 py-3.5 font-mono text-sm font-semibold rounded-full border border-red-500/30 bg-red-950/20 text-red-400 hover:text-white hover:bg-red-500 hover:border-red-400 transition-all duration-300 transform active:scale-95 hover:scale-105 shadow-[0_0_20px_rgba(239,68,68,0.1)] hover:shadow-[0_0_30px_rgba(239,68,68,0.4)] cursor-pointer"
-            onClick={() => setCount((count) => count + 1)}
-          >
-            Count is {count}
-          </button>
-        </section>
+      <main className="w-full max-w-6xl mx-auto px-4 md:px-6 py-6 flex-grow z-10">
+        {currentTab === 'search' && (
+          <AISearchTab
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            searchExamples={searchExamples}
+            isSearching={isSearching}
+            searchResult={searchResult}
+            selectedForComparison={selectedForComparison}
+            toggleComparison={toggleComparison}
+            openDetailModal={openDetailModal}
+            handleAISearch={handleAISearch}
+          />
+        )}
 
-        {/* Dynamic glow divider */}
-        <div className="w-full max-w-4xl h-[1px] bg-gradient-to-r from-transparent via-zinc-800/60 to-transparent my-10"></div>
+        {currentTab === 'explore' && (
+          <ExploreTab
+            properties={properties}
+            zones={zones}
+            filters={filters}
+            handleFilterChange={handleFilterChange}
+            resetFilters={resetFilters}
+            exploreLoading={exploreLoading}
+            selectedForComparison={selectedForComparison}
+            toggleComparison={toggleComparison}
+            triggerAIComparison={triggerAIComparison}
+            openDetailModal={openDetailModal}
+          />
+        )}
 
-        {/* Next Steps / Docs & Community Grid */}
-        <section id="next-steps" className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl">
-          {/* Documentation Card */}
-          <div id="docs" className="p-8 rounded-2xl border border-zinc-900/80 bg-zinc-950/40 backdrop-blur-md hover:border-red-500/20 transition-all duration-300 hover:-translate-y-1">
-            <div className="flex items-center gap-3 mb-3 text-red-500">
-              <svg className="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-              </svg>
-              <h2 className="text-2xl font-bold text-zinc-100">Documentation</h2>
-            </div>
-            <p className="text-zinc-500 text-sm mb-6">Your questions, answered</p>
-            <ul className="flex flex-wrap gap-3">
-              <li>
-                <a 
-                  href="https://vite.dev/" 
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-900/50 hover:bg-zinc-900 text-zinc-300 hover:text-red-400 border border-zinc-800/80 hover:border-red-500/20 transition-all duration-300 text-sm"
-                >
-                  <img className="w-5 h-5 object-contain" src={viteLogo} alt="" />
-                  Explore Vite
-                </a>
-              </li>
-              <li>
-                <a 
-                  href="https://react.dev/" 
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-900/50 hover:bg-zinc-900 text-zinc-300 hover:text-red-400 border border-zinc-800/80 hover:border-red-500/20 transition-all duration-300 text-sm"
-                >
-                  <img className="w-5 h-5 object-contain" src={reactLogo} alt="" />
-                  Learn more
-                </a>
-              </li>
-            </ul>
-          </div>
+        {currentTab === 'compare' && (
+          <CompareTab
+            compareQuery={compareQuery}
+            setCompareQuery={setCompareQuery}
+            isComparing={isComparing}
+            comparisonResult={comparisonResult}
+            selectedForComparison={selectedForComparison}
+            triggerAIComparison={triggerAIComparison}
+            onAddPropertyClick={() => setCurrentTab('explore')}
+            onOpenDetailModal={openDetailModal}
+          />
+        )}
 
-          {/* Social Card */}
-          <div id="social" className="p-8 rounded-2xl border border-zinc-900/80 bg-zinc-950/40 backdrop-blur-md hover:border-red-500/20 transition-all duration-300 hover:-translate-y-1">
-            <div className="flex items-center gap-3 mb-3 text-red-500">
-              <svg className="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-              <h2 className="text-2xl font-bold text-zinc-100">Connect with us</h2>
-            </div>
-            <p className="text-zinc-500 text-sm mb-6">Join the Vite community</p>
-            <ul className="flex flex-wrap gap-2.5">
-              <li>
-                <a 
-                  href="https://github.com/vitejs/vite" 
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-zinc-900/50 hover:bg-zinc-900 text-zinc-300 hover:text-red-400 border border-zinc-800/80 hover:border-red-500/20 transition-all duration-300 text-sm"
-                >
-                  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24" aria-hidden="true">
-                    <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482C19.138 20.193 22 16.44 22 12.017 22 6.484 17.522 2 12 2z" />
-                  </svg>
-                  GitHub
-                </a>
-              </li>
-              <li>
-                <a 
-                  href="https://chat.vite.dev/" 
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-zinc-900/50 hover:bg-zinc-900 text-zinc-300 hover:text-red-400 border border-zinc-800/80 hover:border-red-500/20 transition-all duration-300 text-sm"
-                >
-                  <svg className="w-4 h-4 fill-current" viewBox="0 0 127.14 96.36" aria-hidden="true">
-                    <path d="M107.7,8.07A105.15,105.15,0,0,0,77.26,0a77.19,77.19,0,0,0-3.3,6.83A96.67,96.67,0,0,0,53.22,6.83,77.19,77.19,0,0,0,49.88,0,105.15,105.15,0,0,0,19.44,8.07C3.66,31.58-1.86,54.65,1,77.53A105.73,105.73,0,0,0,32,96.36a77.7,77.7,0,0,0,6.63-10.85,68.43,68.43,0,0,1-10.5-5c.88-.65,1.72-1.34,2.51-2.06a75.45,75.45,0,0,0,73.1,0c.8.72,1.63,1.41,2.51,2.06a68.43,68.43,0,0,1-10.5,5,77.7,77.7,0,0,0,6.63,10.85,105.73,105.73,0,0,0,31-18.83C129.07,49.82,123.1,26.9,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53S36.18,40.36,42.45,40.36,53.9,46,53.9,53,48.72,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.24,60,73.24,53S78.41,40.36,84.69,40.36,96.14,46,96.14,53,91,65.69,84.69,65.69Z"/>
-                  </svg>
-                  Discord
-                </a>
-              </li>
-              <li>
-                <a 
-                  href="https://x.com/vite_js" 
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-zinc-900/50 hover:bg-zinc-900 text-zinc-300 hover:text-red-400 border border-zinc-800/80 hover:border-red-500/20 transition-all duration-300 text-sm"
-                >
-                  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                  </svg>
-                  X.com
-                </a>
-              </li>
-              <li>
-                <a 
-                  href="https://bsky.app/profile/vite.dev" 
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-zinc-900/50 hover:bg-zinc-900 text-zinc-300 hover:text-red-400 border border-zinc-800/80 hover:border-red-500/20 transition-all duration-300 text-sm"
-                >
-                  <svg className="w-4 h-4 fill-current" viewBox="0 0 512 512" aria-hidden="true">
-                    <path d="M111.8 77.2C167.3 118.8 221.7 186.8 247.9 226.7c2.6 4 3.9 6 8.1 6s5.5-2 8.1-6c26.2-39.9 80.6-107.9 136.1-149.5c36.2-27.1 76.6-43.7 112-25.2c30.2 15.8 38.6 57.7 28.5 101.1c-13.3 56.8-63.5 137.9-106.8 190.7c-25 30.5-56.9 66.8-89.8 101c-32.9 34.2-64.8 67.5-74.8 76.9c-2.4 2.2-5.5 3.5-8.7 3.5s-6.3-1.3-8.7-3.5c-10-9.4-41.9-42.7-74.8-76.9c-32.9-34.2-64.8-70.5-89.8-101C116.6 291.5 66.4 210.4 53.1 153.6C43 110.2 51.4 68.3 81.6 52.5c35.4-18.5 75.8-1.9 112 25.2z"/>
-                  </svg>
-                  Bluesky
-                </a>
-              </li>
-            </ul>
-          </div>
-        </section>
+        {currentTab === 'enhance' && (
+          <EnhanceTab
+            rawEnhanceText={rawEnhanceText}
+            setRawEnhanceText={setRawEnhanceText}
+            isEnhancing={isEnhancing}
+            enhancedResult={enhancedResult}
+            handleEnhancement={handleEnhancement}
+            saveEnhancedDraft={saveEnhancedDraft}
+          />
+        )}
 
-      </div>
+        {currentTab === 'admin' && (
+          <AdminTab
+            isAdminLoggedIn={isAdminLoggedIn}
+            adminUser={adminUser}
+            loginEmail={loginEmail}
+            setLoginEmail={setLoginEmail}
+            loginPassword={loginPassword}
+            setLoginPassword={setLoginPassword}
+            loginError={loginError}
+            handleAdminLogin={handleAdminLogin}
+            handleAdminLogout={handleAdminLogout}
+            leads={leads}
+            imports={imports}
+            sources={sources}
+            importUrl={importUrl}
+            setImportUrl={setImportUrl}
+            importLimit={importLimit}
+            setImportLimit={setImportLimit}
+            isImporting={isImporting}
+            handleRunImport={handleRunImport}
+            triggerReindex={triggerReindex}
+            ragStatus={ragStatus}
+          />
+        )}
+      </main>
 
-      {/* Footer / Spacer spacer */}
-      <footer className="w-full max-w-4xl py-6 border-t border-zinc-900/60 text-center text-xs text-zinc-600 z-10">
-        Build with Tailwind CSS v4 & React
-      </footer>
+      <Footer />
+
+      {/* Global Detail Modal */}
+      {selectedProperty && (
+        <PropertyDetailModal
+          property={selectedProperty}
+          onClose={closeDetailModal}
+        />
+      )}
     </div>
   )
 }
