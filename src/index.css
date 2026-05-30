@@ -1,1 +1,119 @@
 @import "tailwindcss";
+
+@theme {
+  --color-mita-green: #4FA75A;
+  --color-mita-forest: #2E7D43;
+  --color-mita-soft-leaf: #A8D89D;
+  --color-mita-mist: #DDF1D5;
+  --color-cloud-white: #F8FAF8;
+  --color-deep-graphite: #1C1F1D;
+
+  --color-aqua-glow: #7EE6D8;
+  --color-mint-pulse: #8EF0B5;
+  --color-ai-cyan: #89D8FF;
+  --color-lavender-blur: #B8A7FF;
+  --color-blue-haze: #C7E8FF;
+  --color-pink-haze: #F5C8E8;
+
+  --color-muted-text: #68736B;
+}
+
+/* ── Light mode (default) ─────────────────────────────── */
+:root {
+  --bg-base: #F8FAF8;
+  --bg-surface: rgba(255, 255, 255, 0.70);
+  --bg-surface-2: rgba(255, 255, 255, 0.50);
+  --bg-input: #F4F6F4;
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --text-primary: #1C1F1D;
+  --text-secondary: #52635A;
+  --text-muted: #8C9E94;
+  --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+
+  --grad-radial-1: rgba(126, 230, 216, 0.22);
+  --grad-radial-2: rgba(184, 167, 255, 0.22);
+  --grad-radial-3: rgba(79, 167, 90, 0.12);
+}
+
+/* ── Dark mode ─────────────────────────────────────────── */
+[data-theme="dark"] {
+  --bg-base: #0F1410;
+  --bg-surface: rgba(22, 30, 24, 0.85);
+  --bg-surface-2: rgba(28, 38, 30, 0.60);
+  --bg-input: #1A241C;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --text-primary: #E8F0EA;
+  --text-secondary: #9DB8A4;
+  --text-muted: #607068;
+  --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.40);
+
+  --grad-radial-1: rgba(46, 125, 67, 0.18);
+  --grad-radial-2: rgba(79, 167, 90, 0.10);
+  --grad-radial-3: rgba(126, 230, 216, 0.07);
+}
+
+/* ── Body ──────────────────────────────────────────────── */
+body {
+  background:
+    radial-gradient(circle at top left, var(--grad-radial-1), transparent 35%),
+    radial-gradient(circle at 85% 12%, var(--grad-radial-2), transparent 30%),
+    radial-gradient(circle at 70% 85%, var(--grad-radial-3), transparent 35%),
+    var(--bg-base);
+  color: var(--text-primary);
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  transition: background 0.35s ease, color 0.25s ease;
+}
+
+/* ── Dark mode surface overrides ───────────────────────── */
+[data-theme="dark"] .bg-white\/70,
+[data-theme="dark"] .bg-white\/50 {
+  background-color: var(--bg-surface) !important;
+}
+
+[data-theme="dark"] .bg-white {
+  background-color: var(--bg-surface) !important;
+}
+
+[data-theme="dark"] .bg-zinc-50 {
+  background-color: var(--bg-input) !important;
+}
+
+[data-theme="dark"] .bg-zinc-100 {
+  background-color: #1E2A20 !important;
+}
+
+[data-theme="dark"] .border-zinc-200,
+[data-theme="dark"] .border-zinc-200\/80 {
+  border-color: var(--border-subtle) !important;
+}
+
+[data-theme="dark"] .text-zinc-800,
+[data-theme="dark"] .text-zinc-900 {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .text-zinc-600,
+[data-theme="dark"] .text-zinc-500 {
+  color: var(--text-secondary) !important;
+}
+
+[data-theme="dark"] .text-zinc-400 {
+  color: var(--text-muted) !important;
+}
+
+/* fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.45s ease forwards;
+}
