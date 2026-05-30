@@ -1,20 +1,16 @@
-import React, { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { createLead } from '../api'
 
 function PropertyDetailModal({ property, onClose }) {
   const [leadName, setLeadName] = useState('')
   const [leadPhone, setLeadPhone] = useState('59178012345')
-  const [leadMessage, setLeadMessage] = useState('')
+  const [leadMessage, setLeadMessage] = useState(() => (
+    property
+      ? `Hola ${property.nombreContacto}, vi tu publicacion del espacio "${property.titulo}" en Mita AI. Me interesa agendar una visita tecnica para evaluar las condiciones operativas.`
+      : ''
+  ))
   const [leadSubmittedUrl, setLeadSubmittedUrl] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-
-  useEffect(() => {
-    if (property) {
-      setLeadSubmittedUrl('')
-      setLeadName('')
-      setLeadMessage(`Hola ${property.nombreContacto}, vi tu publicación del espacio "${property.titulo}" en Mita AI. Me interesa agendar una visita técnica para evaluar las condiciones operativas.`)
-    }
-  }, [property])
 
   if (!property) return null
 
@@ -42,11 +38,11 @@ function PropertyDetailModal({ property, onClose }) {
   }
 
   return (
-    <div className="fixed inset-0 bg-zinc-950/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
-      <div className="bg-white max-w-2xl w-full rounded-3xl overflow-hidden shadow-2xl border border-zinc-200 max-h-[90vh] flex flex-col">
+    <div className="fixed inset-0 bg-zinc-950/60 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 z-50 animate-fadeIn">
+      <div className="bg-white max-w-2xl w-full rounded-3xl overflow-hidden shadow-2xl border border-zinc-200 max-h-[94vh] sm:max-h-[90vh] flex flex-col">
         
         {/* Modal Header Image */}
-        <div className="h-52 relative bg-zinc-100 flex-shrink-0">
+        <div className="h-44 sm:h-52 relative bg-zinc-100 flex-shrink-0">
           <img
             src={property.urlImagen}
             alt={property.titulo}
@@ -67,10 +63,10 @@ function PropertyDetailModal({ property, onClose }) {
         </div>
 
         {/* Modal Content Scroll */}
-        <div className="p-6 overflow-y-auto flex-grow flex flex-col gap-5">
+        <div className="p-4 sm:p-6 overflow-y-auto flex-grow flex flex-col gap-5">
           
           {/* Row 1: Title and Price */}
-          <div className="flex justify-between items-start gap-4 pb-4 border-b border-zinc-100">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 sm:gap-4 pb-4 border-b border-zinc-100">
             <div>
               <h2 className="text-xl font-black text-zinc-900 leading-snug">{property.titulo}</h2>
               <div className="flex items-center gap-3 text-xs text-zinc-400 font-bold uppercase mt-1">
@@ -79,7 +75,7 @@ function PropertyDetailModal({ property, onClose }) {
                 <span>📐 {property.areaM2} m²</span>
               </div>
             </div>
-            <div className="text-right">
+            <div className="sm:text-right">
               <span className="text-2xl font-black text-[#2E7D43] block leading-none">
                 ${property.precio}
               </span>
@@ -100,7 +96,7 @@ function PropertyDetailModal({ property, onClose }) {
           {/* Row 3: Technical operational traits */}
           <div>
             <span className="text-[10px] text-zinc-400 font-black uppercase tracking-wider block mb-2">Características Operativas (Ficha Técnica):</span>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 bg-zinc-50 border border-zinc-200/50 p-4 rounded-2xl">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 bg-zinc-50 border border-zinc-200/50 p-4 rounded-2xl">
               <div>
                 <span className="block text-[9px] text-zinc-400 font-bold uppercase">Luz Trifásica</span>
                 <strong className="text-xs text-zinc-800 font-bold">{property.caracteristicasOperativas.energiaTrifasica ? 'Instalada' : 'Monofásica'}</strong>
@@ -195,7 +191,7 @@ function PropertyDetailModal({ property, onClose }) {
         </div>
 
         {/* Modal Footer */}
-        <div className="p-4 bg-zinc-50 border-t border-zinc-100 text-center text-[10px] text-zinc-400 font-semibold uppercase flex justify-between items-center px-6">
+        <div className="p-4 bg-zinc-50 border-t border-zinc-100 text-center text-[10px] text-zinc-400 font-semibold uppercase flex flex-col sm:flex-row justify-between items-center gap-1 px-6">
           <span>Publicado por: {property.nombreContacto}</span>
           <span>ID: {property.id}</span>
         </div>

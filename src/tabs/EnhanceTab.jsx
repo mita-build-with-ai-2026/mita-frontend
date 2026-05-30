@@ -1,5 +1,3 @@
-import React from 'react'
-
 function EnhanceTab({
   rawEnhanceText,
   setRawEnhanceText,
@@ -17,7 +15,7 @@ function EnhanceTab({
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 items-stretch">
         {/* Input raw text */}
         <div className="bg-white border border-zinc-200/80 p-5 md:p-6 rounded-3xl shadow-sm flex flex-col justify-between">
           <div>
@@ -76,7 +74,7 @@ function EnhanceTab({
           {!isEnhancing && enhancedResult && (
             <div className="flex flex-col justify-between h-full animate-fadeIn">
               <div>
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
                   <span className="text-[9px] bg-emerald-100 text-emerald-700 font-bold border border-emerald-200 px-2 py-0.5 rounded uppercase">
                     Resultados de Estructuración
                   </span>
@@ -87,7 +85,7 @@ function EnhanceTab({
                   {enhancedResult.titulo}
                 </h3>
 
-                <div className="grid grid-cols-2 gap-3 bg-white p-3.5 rounded-2xl border border-zinc-200/50 mb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-white p-3.5 rounded-2xl border border-zinc-200/50 mb-4">
                   <div>
                     <span className="block text-[9px] text-zinc-400 font-bold uppercase">Tipo de espacio:</span>
                     <strong className="text-xs text-zinc-800 uppercase font-semibold">{enhancedResult.propertyDraft.tipoPropiedad}</strong>
@@ -119,21 +117,21 @@ function EnhanceTab({
                 )}
               </div>
 
-              <div className="flex gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <button
                   type="button"
                   onClick={() => {
                     navigator.clipboard.writeText(enhancedResult.versionWhatsapp)
                     alert('¡Copiado al portapapeles!')
                   }}
-                  className="flex-grow py-2.5 bg-zinc-900 text-white font-bold text-xs rounded-xl shadow hover:bg-zinc-850 cursor-pointer text-center font-semibold"
+                  className="w-full py-2.5 bg-zinc-900 text-white font-bold text-xs rounded-xl shadow hover:bg-zinc-800 cursor-pointer text-center font-semibold"
                 >
                   Copiar WhatsApp
                 </button>
                 <button
                   type="button"
                   onClick={saveEnhancedDraft}
-                  className="flex-grow py-2.5 bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs rounded-xl shadow cursor-pointer text-center font-semibold"
+                  className="w-full py-2.5 bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs rounded-xl shadow cursor-pointer text-center font-semibold"
                 >
                   Guardar Borrador
                 </button>

@@ -1,4 +1,3 @@
-import React from 'react'
 import PropertyCard from '../components/PropertyCard'
 
 function ExploreTab({
@@ -20,7 +19,7 @@ function ExploreTab({
           <h1 className="text-3xl font-black tracking-tight text-zinc-900">Directorio de Espacios</h1>
           <p className="text-zinc-500 text-sm mt-1 font-medium">Explora la oferta inmobiliaria industrial, logística y residencial de Santa Cruz con filtros avanzados.</p>
         </div>
-        <div className="flex gap-2.5">
+        <div className="grid grid-cols-1 sm:flex gap-2.5 w-full md:w-auto">
           <button
             onClick={resetFilters}
             className="px-4 py-2 border border-zinc-200/80 rounded-2xl bg-white hover:bg-zinc-50 text-zinc-600 text-xs font-bold shadow-sm transition-colors cursor-pointer"
@@ -42,7 +41,7 @@ function ExploreTab({
       </div>
 
       {/* Traditional Filters */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-5 rounded-3xl bg-white border border-zinc-200/80 shadow-md">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 sm:p-5 rounded-3xl bg-white border border-zinc-200/80 shadow-md">
         <div>
           <label className="block text-[10px] text-zinc-400 uppercase font-black tracking-wider mb-1.5">Zona de Santa Cruz</label>
           <select
@@ -108,7 +107,7 @@ function ExploreTab({
           <p className="text-zinc-500 text-sm font-semibold">Cargando propiedades...</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-2">
           {properties.length === 0 ? (
             <div className="col-span-1 md:col-span-3 text-center py-16 bg-white border border-zinc-200 rounded-3xl">
               <p className="text-zinc-500 text-sm font-semibold">No se encontraron propiedades con los filtros seleccionados.</p>

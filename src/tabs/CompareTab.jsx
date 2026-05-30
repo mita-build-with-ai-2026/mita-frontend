@@ -1,5 +1,3 @@
-import React from 'react'
-
 function CompareTab({
   compareQuery,
   setCompareQuery,
@@ -18,10 +16,10 @@ function CompareTab({
       </div>
 
       {/* Input query and selection */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 items-stretch">
         
         {/* Query & Trigger Box */}
-        <div className="md:col-span-1 bg-white border border-zinc-200/80 p-5 rounded-3xl shadow-sm flex flex-col justify-between">
+        <div className="lg:col-span-1 bg-white border border-zinc-200/80 p-5 rounded-3xl shadow-sm flex flex-col justify-between">
           <div>
             <h3 className="text-sm font-bold text-zinc-800 uppercase tracking-wider mb-2.5">Contexto del negocio</h3>
             <textarea
@@ -55,9 +53,9 @@ function CompareTab({
         </div>
 
         {/* Selected Cards quick review */}
-        <div className="md:col-span-2 bg-zinc-50 border border-zinc-200/80 p-5 rounded-3xl flex flex-col justify-center">
+        <div className="lg:col-span-2 bg-zinc-50 border border-zinc-200/80 p-5 rounded-3xl flex flex-col justify-center">
           <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider block mb-4">Espacios a comparar:</span>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {selectedForComparison.map(p => (
               <div key={p.id} className="bg-white border border-zinc-200/80 p-4 rounded-2xl shadow-sm flex flex-col justify-between">
                 <div>
@@ -96,10 +94,10 @@ function CompareTab({
       )}
 
       {!isComparing && comparisonResult && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mt-4">
           
           {/* AI Executive Verdict */}
-          <div className="md:col-span-1 bg-gradient-to-br from-[#2E7D43] to-[#4FA75A] text-white p-6 rounded-3xl shadow-xl flex flex-col justify-between relative overflow-hidden">
+          <div className="lg:col-span-1 bg-gradient-to-br from-[#2E7D43] to-[#4FA75A] text-white p-5 sm:p-6 rounded-3xl shadow-xl flex flex-col justify-between relative overflow-hidden">
             <div className="absolute right-0 top-0 w-48 h-48 bg-white/10 blur-[40px] rounded-full pointer-events-none"></div>
             
             <div>
@@ -132,7 +130,7 @@ function CompareTab({
           </div>
 
           {/* Side-by-Side Comparison Table */}
-          <div className="md:col-span-2 bg-white border border-zinc-200/80 p-5 md:p-6 rounded-3xl shadow-sm">
+          <div className="lg:col-span-2 bg-white border border-zinc-200/80 p-5 md:p-6 rounded-3xl shadow-sm min-w-0">
             <h3 className="text-sm font-bold text-zinc-800 uppercase tracking-wider mb-4">Matriz comparativa de infraestructura:</h3>
             
             <div className="overflow-x-auto">
@@ -162,13 +160,13 @@ function CompareTab({
               </table>
             </div>
 
-            <div className="mt-8 flex justify-end">
+            <div className="mt-8 flex justify-stretch sm:justify-end">
               <button
                 onClick={() => {
                   const recProp = selectedForComparison.find(p => p.id === comparisonResult.recommendedPropertyId)
                   if (recProp) onOpenDetailModal(recProp)
                 }}
-                className="px-6 py-3 bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs rounded-2xl shadow-md cursor-pointer transition-all duration-300 active:scale-95"
+                className="w-full sm:w-auto px-6 py-3 bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs rounded-2xl shadow-md cursor-pointer transition-all duration-300 active:scale-95"
               >
                 Contactar Opción Recomendada
               </button>

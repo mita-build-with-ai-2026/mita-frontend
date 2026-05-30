@@ -1,5 +1,3 @@
-import React from 'react'
-
 function AdminTab({
   isAdminLoggedIn,
   adminUser,
@@ -12,7 +10,6 @@ function AdminTab({
   handleAdminLogout,
   leads,
   imports,
-  sources,
   importUrl,
   setImportUrl,
   importLimit,
@@ -79,7 +76,7 @@ function AdminTab({
         <div className="flex flex-col gap-6">
           
           {/* Header row */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 bg-white border border-zinc-200/80 rounded-3xl shadow-sm">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-5 bg-white border border-zinc-200/80 rounded-3xl shadow-sm">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 grid place-items-center rounded-xl bg-zinc-900 text-white font-bold text-base">
                 A
@@ -90,7 +87,7 @@ function AdminTab({
               </div>
             </div>
             
-            <div className="flex gap-2">
+            <div className="grid grid-cols-1 sm:flex gap-2 w-full lg:w-auto">
               <button
                 type="button"
                 onClick={triggerReindex}
@@ -115,10 +112,10 @@ function AdminTab({
           )}
 
           {/* Dashboard stats / grids */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 items-start">
             
             {/* Scraper / Run scraper */}
-            <div className="md:col-span-1 bg-white border border-zinc-200/80 p-5 rounded-3xl shadow-sm flex flex-col gap-4">
+            <div className="lg:col-span-1 bg-white border border-zinc-200/80 p-5 rounded-3xl shadow-sm flex flex-col gap-4">
               <h3 className="text-sm font-bold text-zinc-800 uppercase tracking-wider">Simular Scraper / Importador</h3>
               
               <form onSubmit={handleRunImport} className="flex flex-col gap-3">
@@ -180,7 +177,7 @@ function AdminTab({
             </div>
 
             {/* Registered Leads Monitor */}
-            <div className="md:col-span-2 bg-white border border-zinc-200/80 p-5 md:p-6 rounded-3xl shadow-sm">
+            <div className="lg:col-span-2 bg-white border border-zinc-200/80 p-5 md:p-6 rounded-3xl shadow-sm min-w-0">
               <h3 className="text-sm font-bold text-zinc-800 uppercase tracking-wider mb-4">Monitor de Leads de Contacto (WhatsApp)</h3>
               
               {leads.length === 0 ? (

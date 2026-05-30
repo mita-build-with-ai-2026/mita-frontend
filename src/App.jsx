@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import './App.css'
 
 // API
@@ -24,6 +24,7 @@ import {
 import Header from './components/Header'
 import Footer from './components/Footer'
 import PropertyDetailModal from './components/PropertyDetailModal'
+import LoginPage from './components/LoginPage'
 
 // Tab Views
 import AISearchTab from './tabs/AISearchTab'
@@ -35,8 +36,16 @@ import AdminTab from './tabs/AdminTab'
 function App() {
   // ─── Navigation ──────────────────────────────────────────────
   const [currentTab, setCurrentTab] = useState('search')
-  const [clientMode, setClientMode] = useState('SIMULATION')
+  const [clientMode] = useState(() => getClientMode())
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem('mita_dark') === 'true')
+  const [appUser, setAppUser] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('mita_app_user')) || null
+    } catch {
+      return null
+    }
+  })
+  const [showLogin, setShowLogin] = useState(false)
 
   // ─── Auth ────────────────────────────────────────────────────
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false)
@@ -73,7 +82,6 @@ function App() {
   // ─── Admin ───────────────────────────────────────────────────
   const [leads, setLeads] = useState([])
   const [imports, setImports] = useState([])
-  const [sources, setSources] = useState([])
   const [importUrl, setImportUrl] = useState('https://facebook.com/marketplace/santacruz/alquileres')
   const [importLimit, setImportLimit] = useState(15)
   const [isImporting, setIsImporting] = useState(false)
@@ -90,9 +98,33 @@ function App() {
 
   const toggleDarkMode = () => setDarkMode(prev => !prev)
 
+  const handleUserLogin = (user) => {
+    localStorage.setItem('mita_app_user', JSON.stringify(user))
+    setAppUser(user)
+    setShowLogin(false)
+  }
+
+  const handleUserLogout = () => {
+    localStorage.removeItem('mita_app_user')
+    setAppUser(null)
+    setSelectedProperty(null)
+    setCurrentTab('search')
+  }
+
+  const loadProperties = useCallback(() => {
+    setExploreLoading(true)
+    getProperties(filters)
+      .then(res => { setProperties(res.data); setExploreLoading(false) })
+      .catch(() => setExploreLoading(false))
+  }, [filters])
+
+  const loadAdminData = useCallback(() => {
+    getLeads().then(res => setLeads(res.data))
+    getImports().then(res => setImports(res.data))
+  }, [])
+
   // ─── Bootstrap ───────────────────────────────────────────────
   useEffect(() => {
-    setClientMode(getClientMode())
     getZones().then(data => setZones(data.zones))
     getSearchExamples().then(data => setSearchExamples(data.examples))
 
@@ -103,30 +135,18 @@ function App() {
         .catch(() => localStorage.removeItem('mita_token'))
     }
 
-    loadProperties()
   }, [])
 
   useEffect(() => {
     if (isAdminLoggedIn && currentTab === 'admin') loadAdminData()
-  }, [isAdminLoggedIn, currentTab])
+  }, [isAdminLoggedIn, currentTab, loadAdminData])
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadProperties()
-  }, [filters])
+  }, [loadProperties])
 
   // ─── Helpers ─────────────────────────────────────────────────
-  const loadProperties = () => {
-    setExploreLoading(true)
-    getProperties(filters)
-      .then(res => { setProperties(res.data); setExploreLoading(false) })
-      .catch(() => setExploreLoading(false))
-  }
-
-  const loadAdminData = () => {
-    getLeads().then(res => setLeads(res.data))
-    getImports().then(res => setImports(res.data))
-  }
-
   // ─── Search Handlers ─────────────────────────────────────────
   const handleAISearch = (e, customQuery) => {
     if (e) e.preventDefault()
@@ -229,13 +249,19 @@ function App() {
   const closeDetailModal = () => setSelectedProperty(null)
 
   // ─── Render ──────────────────────────────────────────────────
-  return (
-    <div className="min-h-screen flex flex-col justify-between selection:bg-[#4FA75A]/20 selection:text-[#2E7D43]">
+  if (showLogin) {
+    return (
+      <LoginPage
+        onLogin={handleUserLogin}
+        onSkip={() => setShowLogin(false)}
+        darkMode={darkMode}
+        toggleDarkMode={toggleDarkMode}
+      />
+    )
+  }
 
-      {/* Ambient background blurs */}
-      <div className="fixed blur-[70px] opacity-45 z-[-1] pointer-events-none w-[360px] h-[360px] rounded-full bg-[#7EE6D8] top-20 -left-[120px]" />
-      <div className="fixed blur-[70px] opacity-45 z-[-1] pointer-events-none w-[320px] h-[320px] rounded-full bg-[#B8A7FF] top-[120px] -right-[100px]" />
-      <div className="fixed blur-[70px] opacity-35 z-[-1] pointer-events-none w-[280px] h-[280px] rounded-full bg-[#A8D89D] bottom-20 left-[45%]" />
+  return (
+    <div className="min-h-screen flex flex-col justify-between overflow-x-hidden selection:bg-[#4FA75A]/20 selection:text-[#2E7D43]">
 
       <Header
         currentTab={currentTab}
@@ -244,9 +270,12 @@ function App() {
         clientMode={clientMode}
         darkMode={darkMode}
         toggleDarkMode={toggleDarkMode}
+        appUser={appUser}
+        onUserLogout={handleUserLogout}
+        onLoginClick={() => setShowLogin(true)}
       />
 
-      <main className="w-full max-w-6xl mx-auto px-4 md:px-6 py-6 flex-grow z-10">
+      <main className="w-full max-w-6xl mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6 flex-grow z-10">
         {currentTab === 'search' && (
           <AISearchTab
             searchQuery={searchQuery}
@@ -313,7 +342,6 @@ function App() {
             handleAdminLogout={handleAdminLogout}
             leads={leads}
             imports={imports}
-            sources={sources}
             importUrl={importUrl}
             setImportUrl={setImportUrl}
             importLimit={importLimit}
@@ -331,6 +359,7 @@ function App() {
       {/* Global Detail Modal */}
       {selectedProperty && (
         <PropertyDetailModal
+          key={selectedProperty.id}
           property={selectedProperty}
           onClose={closeDetailModal}
         />

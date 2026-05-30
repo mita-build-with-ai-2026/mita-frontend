@@ -1,5 +1,3 @@
-import React from 'react'
-
 function PropertyCard({ property, isSelectedForComparison, onToggleComparison, onOpenDetail }) {
   return (
     <div
@@ -38,11 +36,11 @@ function PropertyCard({ property, isSelectedForComparison, onToggleComparison, o
 
         {/* Info Body */}
         <div className="p-5">
-          <div className="flex justify-between items-start gap-4 mb-2">
+          <div className="flex justify-between items-start gap-3 mb-2 min-w-0">
             <h3 className="font-black text-base text-zinc-900 tracking-tight leading-snug line-clamp-2">
               {property.titulo}
             </h3>
-            <div className="text-right">
+            <div className="text-right shrink-0">
               <span className="text-base font-black text-[#2E7D43] block leading-none">
                 ${property.precio}
               </span>
@@ -76,8 +74,8 @@ function PropertyCard({ property, isSelectedForComparison, onToggleComparison, o
       </div>
 
       {/* Footer Row */}
-      <div className="p-5 border-t border-zinc-100 flex justify-between items-center bg-zinc-50/50">
-        <span className="text-[9px] text-zinc-400 font-bold uppercase tracking-wider">
+      <div className="p-5 border-t border-zinc-100 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 bg-zinc-50/50">
+        <span className="text-[9px] text-zinc-400 font-bold uppercase tracking-wider truncate">
           Contacto: {property.nombreContacto.split(' ')[0]}
         </span>
         <button

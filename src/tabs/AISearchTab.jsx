@@ -1,5 +1,3 @@
-import React from 'react'
-
 function AISearchTab({
   searchQuery,
   setSearchQuery,
@@ -12,13 +10,13 @@ function AISearchTab({
   handleAISearch
 }) {
   return (
-    <div className="flex flex-col items-center gap-8 py-8 animate-fadeIn">
+    <div className="flex flex-col items-center gap-6 sm:gap-8 py-4 sm:py-8 animate-fadeIn">
       <div className="text-center max-w-3xl">
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/70 border border-[#4FA75A]/20 text-[#2E7D43] font-bold text-xs shadow-sm backdrop-blur-md mb-4">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
           Digitalizando la Industria Inmobiliaria
         </div>
-        <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-none mb-6">
+        <h1 className="text-3xl sm:text-4xl md:text-6xl font-black tracking-tight leading-tight md:leading-none mb-5 sm:mb-6">
           Encuentra tu espacio con <span className="bg-gradient-to-r from-[#2E7D43] via-[#4FA75A] to-[#7EE6D8] bg-clip-text text-transparent">Inteligencia Artificial</span>
         </h1>
         <p className="text-zinc-500 text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
@@ -27,8 +25,8 @@ function AISearchTab({
       </div>
 
       {/* Chat/Search Area */}
-      <div className="w-full max-w-3xl bg-white/70 backdrop-blur-xl border border-zinc-200/80 p-5 md:p-6 rounded-3xl shadow-xl">
-        <form onSubmit={handleAISearch} className="flex gap-2">
+      <div className="w-full max-w-3xl bg-white/70 backdrop-blur-xl border border-zinc-200/80 p-4 sm:p-5 md:p-6 rounded-3xl shadow-xl">
+        <form onSubmit={handleAISearch} className="flex flex-col sm:flex-row gap-2">
           <div className="flex-grow flex items-center bg-zinc-50 border border-zinc-200 hover:border-zinc-300 transition-colors rounded-2xl px-4 py-3 shadow-inner">
             <svg className="w-5 h-5 text-zinc-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
@@ -44,7 +42,7 @@ function AISearchTab({
           <button
             type="submit"
             disabled={isSearching}
-            className="px-6 rounded-2xl bg-gradient-to-r from-[#2E7D43] to-[#4FA75A] hover:from-[#2E7D43]/90 hover:to-[#4FA75A]/90 text-white font-bold text-sm shadow-md flex items-center justify-center gap-2 cursor-pointer transition-all duration-300 active:scale-95 disabled:opacity-70"
+            className="w-full sm:w-auto px-6 py-3 sm:py-0 rounded-2xl bg-gradient-to-r from-[#2E7D43] to-[#4FA75A] hover:from-[#2E7D43]/90 hover:to-[#4FA75A]/90 text-white font-bold text-sm shadow-md flex items-center justify-center gap-2 cursor-pointer transition-all duration-300 active:scale-95 disabled:opacity-70"
           >
             {isSearching ? (
               <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
@@ -112,7 +110,7 @@ function AISearchTab({
 
             <h3 className="text-xl font-bold tracking-tight mb-4">Mita interpretó tu intención de búsqueda:</h3>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-white/5 p-4 rounded-2xl border border-white/10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 bg-white/5 p-4 rounded-2xl border border-white/10">
               <div>
                 <span className="block text-[10px] text-zinc-400 uppercase font-semibold">Tipo de espacio</span>
                 <strong className="text-sm text-zinc-100">{searchResult.criteria.tipoPropiedad || 'Indeterminado'}</strong>
@@ -176,7 +174,7 @@ function AISearchTab({
                   {/* Right Card Content */}
                   <div className="p-5 md:p-6 flex-grow flex flex-col justify-between">
                     <div>
-                      <div className="flex justify-between items-start gap-4 mb-2">
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 sm:gap-4 mb-2">
                         <div>
                           <span className="text-[10px] text-[#2E7D43] font-bold bg-[#DDF1D5] px-2.5 py-1 rounded-full uppercase border border-[#4FA75A]/20 tracking-wider">
                             {res.property.tipoPropiedad} • {res.property.tipoUsoEspacio}
@@ -185,7 +183,7 @@ function AISearchTab({
                             {res.property.titulo}
                           </h4>
                         </div>
-                        <div className="text-right">
+                        <div className="sm:text-right">
                           <div className="text-xl font-black text-[#2E7D43] leading-none">
                             ${res.property.precio} {res.property.moneda}
                           </div>
@@ -228,11 +226,11 @@ function AISearchTab({
                     </div>
 
                     {/* CTA Row */}
-                    <div className="p-4 border-t border-zinc-100 flex justify-between items-center gap-4 mt-6 pt-4">
+                    <div className="p-0 sm:p-4 border-t border-zinc-100 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4 mt-6 pt-4">
                       <span className="text-[9px] bg-amber-50 text-amber-700 font-bold border border-amber-200/50 px-2 py-1 rounded">
                         {res.etiquetaCorta}
                       </span>
-                      <div className="flex gap-2">
+                      <div className="grid grid-cols-2 sm:flex gap-2 w-full sm:w-auto">
                         <button
                           type="button"
                           onClick={() => toggleComparison(res.property)}
