@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mita — Paleta visual</title>
+
+    <style>
+        :root {
+            /* Core brand */
+            --mita-green: #4FA75A;
+            --mita-forest: #2E7D43;
+            --mita-soft-leaf: #A8D89D;
+            --mita-mist: #DDF1D5;
+            --cloud-white: #F8FAF8;
+            --deep-graphite: #1C1F1D;
+
+            /* AI accents */
+            --aqua-glow: #7EE6D8;
+            --mint-pulse: #8EF0B5;
+            --ai-cyan: #89D8FF;
+            --lavender-blur: #B8A7FF;
+            --blue-haze: #C7E8FF;
+            --pink-haze: #F5C8E8;
+
+            /* UI */
+            --white: #FFFFFF;
+            --muted-text: #68736B;
+            --border: rgba(28, 31, 29, 0.1);
+            --shadow: 0 24px 80px rgba(28, 31, 29, 0.14);
+            --soft-shadow: 0 16px 48px rgba(46, 125, 67, 0.14);
+
+            /* Gradients */
+            --gradient-brand: linear-gradient(135deg, #2E7D43 0%, #4FA75A 50%, #8EF0B5 100%);
+            --gradient-ai: linear-gradient(135deg, #7EE6D8 0%, #89D8FF 50%, #B8A7FF 100%);
+            --gradient-mita-ai: linear-gradient(135deg, #4FA75A 0%, #7EE6D8 55%, #89D8FF 100%);
+            --gradient-soft-bg: linear-gradient(135deg, #DDF1D5 0%, #C7E8FF 50%, #F3EEFF 100%);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at top left, rgba(126, 230, 216, 0.32), transparent 34%),
+                radial-gradient(circle at 85% 12%, rgba(184, 167, 255, 0.32), transparent 32%),
+                radial-gradient(circle at 70% 85%, rgba(79, 167, 90, 0.18), transparent 34%),
+                var(--cloud-white);
+            color: var(--deep-graphite);
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            overflow-x: hidden;
+        }
+
+        .page {
+            position: relative;
+            width: min(1180px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: 32px 0 80px;
+        }
+
+        .blur {
+            position: fixed;
+            border-radius: 999px;
+            filter: blur(64px);
+            opacity: 0.55;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .blur-1 {
+            width: 360px;
+            height: 360px;
+            background: var(--aqua-glow);
+            top: 80px;
+            left: -120px;
+        }
+
+        .blur-2 {
+            width: 320px;
+            height: 320px;
+            background: var(--lavender-blur);
+            top: 120px;
+            right: -100px;
+        }
+
+        .blur-3 {
+            width: 280px;
+            height: 280px;
+            background: var(--mita-soft-leaf);
+            bottom: 80px;
+            left: 45%;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 24px;
+            padding: 16px 0 48px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            font-size: 1.4rem;
+        }
+
+        .brand-mark {
+            width: 44px;
+            height: 44px;
+            display: grid;
+            place-items: center;
+            border-radius: 16px;
+            background: var(--gradient-brand);
+            color: white;
+            box-shadow: var(--soft-shadow);
+            font-weight: 900;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.54);
+            backdrop-filter: blur(18px);
+            border-radius: 999px;
+        }
+
+        nav a {
+            color: var(--deep-graphite);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 650;
+            padding: 10px 14px;
+            border-radius: 999px;
+        }
+
+        nav a:hover {
+            background: rgba(79, 167, 90, 0.1);
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+            gap: 42px;
+            align-items: center;
+            padding: 32px 0 72px;
+        }
+
+        .eyebrow {
+            width: fit-content;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            padding: 9px 14px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.64);
+            border: 1px solid rgba(79, 167, 90, 0.22);
+            color: var(--mita-forest);
+            font-size: 0.88rem;
+            font-weight: 750;
+            backdrop-filter: blur(16px);
+        }
+
+        .spark {
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+            background: var(--gradient-ai);
+            box-shadow: 0 0 22px rgba(126, 230, 216, 0.9);
+        }
+
+        h1 {
+            font-size: clamp(3rem, 8vw, 6.7rem);
+            line-height: 0.9;
+            letter-spacing: -0.09em;
+            max-width: 820px;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--mita-forest), var(--mita-green), var(--aqua-glow), var(--ai-cyan));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero-copy {
+            margin-top: 24px;
+            max-width: 620px;
+            color: var(--muted-text);
+            font-size: 1.15rem;
+            line-height: 1.75;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 32px;
+        }
+
+        .btn {
+            appearance: none;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            height: 52px;
+            padding: 0 22px;
+            border-radius: 999px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            color: white;
+            background: var(--gradient-brand);
+            box-shadow: 0 18px 40px rgba(46, 125, 67, 0.28);
+        }
+
+        .btn-secondary {
+            color: var(--deep-graphite);
+            background: rgba(255, 255, 255, 0.68);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(16px);
+        }
+
+        .phone {
+            position: relative;
+            width: min(430px, 100%);
+            margin-left: auto;
+            padding: 16px;
+            border-radius: 42px;
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.58)),
+                var(--gradient-soft-bg);
+            border: 1px solid rgba(255, 255, 255, 0.72);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .phone::before {
+            content: "";
+            position: absolute;
+            inset: -40%;
+            background: conic-gradient(from 180deg, transparent, rgba(126, 230, 216, 0.28), rgba(184, 167, 255, 0.26), transparent);
+            animation: rotate 16s linear infinite;
+            z-index: 0;
+        }
+
+        .phone-inner {
+            position: relative;
+            z-index: 1;
+            background: rgba(248, 250, 248, 0.86);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.76);
+            border-radius: 30px;
+            padding: 18px;
+        }
+
+        @keyframes rotate {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .agent {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .agent-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 16px;
+            background: var(--gradient-mita-ai);
+            display: grid;
+            place-items: center;
+            color: white;
+            font-weight: 900;
+            box-shadow: 0 14px 28px rgba(79, 167, 90, 0.25);
+        }
+
+        .agent strong {
+            display: block;
+            font-size: 0.98rem;
+        }
+
+        .agent span {
+            display: block;
+            color: var(--muted-text);
+            font-size: 0.78rem;
+        }
+
+        .status {
+            width: 10px;
+            height: 10px;
+            background: var(--mint-pulse);
+            border-radius: 999px;
+            box-shadow: 0 0 18px var(--mint-pulse);
+        }
+
+        .bubble {
+            margin-bottom: 10px;
+            padding: 13px 15px;
+            border-radius: 18px;
+            font-size: 0.92rem;
+            line-height: 1.5;
+        }
+
+        .bubble-user {
+            color: white;
+            background: var(--mita-forest);
+            border-bottom-right-radius: 4px;
+            margin-left: 48px;
+        }
+
+        .bubble-ai {
+            background: white;
+            border: 1px solid rgba(28, 31, 29, 0.08);
+            border-bottom-left-radius: 4px;
+            color: var(--deep-graphite);
+            margin-right: 32px;
+        }
+
+        .criteria {
+            display: grid;
+            gap: 8px;
+            margin: 16px 0;
+        }
+
+        .criteria span {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 14px;
+            background: rgba(221, 241, 213, 0.7);
+            color: var(--mita-forest);
+            font-size: 0.82rem;
+            font-weight: 750;
+        }
+
+        .mini-card {
+            padding: 14px;
+            border-radius: 22px;
+            background: white;
+            border: 1px solid rgba(28, 31, 29, 0.08);
+            box-shadow: 0 16px 32px rgba(28, 31, 29, 0.08);
+        }
+
+        .mini-card-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .match {
+            padding: 7px 10px;
+            border-radius: 999px;
+            color: var(--mita-forest);
+            background: rgba(142, 240, 181, 0.34);
+            font-size: 0.78rem;
+            font-weight: 900;
+            white-space: nowrap;
+        }
+
+        .mini-card h3 {
+            font-size: 1rem;
+            letter-spacing: -0.03em;
+            margin-bottom: 4px;
+        }
+
+        .mini-card p {
+            color: var(--muted-text);
+            font-size: 0.84rem;
+            line-height: 1.5;
+        }
+
+        section {
+            padding: 52px 0;
+        }
+
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .section-title h2 {
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            line-height: 1;
+            letter-spacing: -0.07em;
+        }
+
+        .section-title p {
+            max-width: 520px;
+            color: var(--muted-text);
+            line-height: 1.7;
+        }
+
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .swatch {
+            position: relative;
+            min-height: 160px;
+            padding: 16px;
+            border-radius: 28px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.78);
+            box-shadow: 0 18px 40px rgba(28, 31, 29, 0.08);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .swatch::after {
+            content: "";
+            position: absolute;
+            inset: auto 0 0 0;
+            height: 54%;
+            background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.22));
+            pointer-events: none;
+        }
+
+        .swatch-info {
+            position: relative;
+            z-index: 1;
+            color: white;
+        }
+
+        .swatch-info strong {
+            display: block;
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .swatch-info code {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .dark-label .swatch-info {
+            color: var(--deep-graphite);
+        }
+
+        .dark-label::after {
+            background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.52));
+        }
+
+        .bg-green {
+            background: var(--mita-green);
+        }
+
+        .bg-forest {
+            background: var(--mita-forest);
+        }
+
+        .bg-soft-leaf {
+            background: var(--mita-soft-leaf);
+        }
+
+        .bg-mist {
+            background: var(--mita-mist);
+        }
+
+        .bg-cloud {
+            background: var(--cloud-white);
+        }
+
+        .bg-graphite {
+            background: var(--deep-graphite);
+        }
+
+        .bg-aqua {
+            background: var(--aqua-glow);
+        }
+
+        .bg-mint {
+            background: var(--mint-pulse);
+        }
+
+        .bg-cyan {
+            background: var(--ai-cyan);
+        }
+
+        .bg-lavender {
+            background: var(--lavender-blur);
+        }
+
+        .bg-blue-haze {
+            background: var(--blue-haze);
+        }
+
+        .bg-pink {
+            background: var(--pink-haze);
+        }
+
+        .gradient-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .gradient-card {
+            position: relative;
+            min-height: 220px;
+            border-radius: 32px;
+            padding: 24px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .gradient-card::before {
+            content: "";
+            position: absolute;
+            width: 240px;
+            height: 240px;
+            right: -70px;
+            top: -80px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.28);
+            filter: blur(20px);
+        }
+
+        .gradient-card h3 {
+            position: relative;
+            z-index: 1;
+            font-size: 1.4rem;
+            letter-spacing: -0.04em;
+        }
+
+        .gradient-card code {
+            position: relative;
+            z-index: 1;
+            padding: 10px 12px;
+            width: fit-content;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(16px);
+            font-size: 0.78rem;
+            line-height: 1.4;
+        }
+
+        .g-brand {
+            background: var(--gradient-brand);
+        }
+
+        .g-ai {
+            background: var(--gradient-ai);
+        }
+
+        .g-mita-ai {
+            background: var(--gradient-mita-ai);
+        }
+
+        .g-soft {
+            background: var(--gradient-soft-bg);
+            color: var(--deep-graphite);
+        }
+
+        .component-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .panel {
+            padding: 24px;
+            border-radius: 32px;
+            background: rgba(255, 255, 255, 0.68);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(22px);
+            box-shadow: 0 18px 50px rgba(28, 31, 29, 0.08);
+        }
+
+        .panel h3 {
+            font-size: 1.3rem;
+            letter-spacing: -0.04em;
+            margin-bottom: 10px;
+        }
+
+        .panel p {
+            color: var(--muted-text);
+            line-height: 1.7;
+            margin-bottom: 18px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 24px;
+            background: white;
+            border: 1px solid var(--border);
+            box-shadow: 0 12px 30px rgba(28, 31, 29, 0.06);
+        }
+
+        .search-box input {
+            width: 100%;
+            border: none;
+            outline: none;
+            padding: 0 12px;
+            font: inherit;
+            color: var(--deep-graphite);
+        }
+
+        .search-box button {
+            border: none;
+            border-radius: 18px;
+            padding: 12px 16px;
+            background: var(--gradient-brand);
+            color: white;
+            font-weight: 900;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .property-card {
+            margin-top: 18px;
+            background: white;
+            border-radius: 28px;
+            overflow: hidden;
+            border: 1px solid rgba(28, 31, 29, 0.08);
+            box-shadow: 0 20px 46px rgba(28, 31, 29, 0.08);
+        }
+
+        .property-image {
+            height: 180px;
+            background:
+                linear-gradient(135deg, rgba(46, 125, 67, 0.08), rgba(137, 216, 255, 0.25)),
+                url("https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1200&auto=format&fit=crop");
+            background-size: cover;
+            background-position: center;
+        }
+
+        .property-body {
+            padding: 18px;
+        }
+
+        .property-body h4 {
+            font-size: 1.2rem;
+            letter-spacing: -0.04em;
+            margin-bottom: 6px;
+        }
+
+        .property-body p {
+            margin-bottom: 14px;
+            color: var(--muted-text);
+            line-height: 1.6;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag {
+            padding: 8px 10px;
+            border-radius: 999px;
+            background: rgba(221, 241, 213, 0.72);
+            color: var(--mita-forest);
+            font-size: 0.78rem;
+            font-weight: 800;
+        }
+
+        .ai-card {
+            position: relative;
+            overflow: hidden;
+            min-height: 320px;
+            color: var(--deep-graphite);
+        }
+
+        .ai-card::before,
+        .ai-card::after {
+            content: "";
+            position: absolute;
+            border-radius: 999px;
+            filter: blur(36px);
+            opacity: 0.7;
+        }
+
+        .ai-card::before {
+            width: 220px;
+            height: 220px;
+            background: var(--aqua-glow);
+            top: -80px;
+            right: -60px;
+        }
+
+        .ai-card::after {
+            width: 240px;
+            height: 240px;
+            background: var(--lavender-blur);
+            bottom: -90px;
+            left: -70px;
+        }
+
+        .ai-card>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        .insight {
+            display: grid;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .insight-item {
+            padding: 14px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.66);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(18px);
+        }
+
+        .insight-item strong {
+            display: block;
+            margin-bottom: 4px;
+            color: var(--mita-forest);
+        }
+
+        .insight-item span {
+            color: var(--muted-text);
+            line-height: 1.5;
+            font-size: 0.92rem;
+        }
+
+        .footer {
+            margin-top: 48px;
+            padding: 28px;
+            border-radius: 32px;
+            background: var(--deep-graphite);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            gap: 24px;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .footer::before {
+            content: "";
+            position: absolute;
+            width: 320px;
+            height: 320px;
+            background: var(--gradient-ai);
+            border-radius: 999px;
+            filter: blur(60px);
+            opacity: 0.28;
+            right: -80px;
+            top: -120px;
+        }
+
+        .footer>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer strong {
+            font-size: 1.3rem;
+            letter-spacing: -0.04em;
+        }
+
+        .footer p {
+            color: rgba(255, 255, 255, 0.72);
+            margin-top: 6px;
+        }
+
+        @media (max-width: 920px) {
+            header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            nav {
+                width: 100%;
+                justify-content: space-between;
+                overflow-x: auto;
+            }
+
+            .hero {
+                grid-template-columns: 1fr;
+            }
+
+            .phone {
+                margin: 0;
+            }
+
+            .palette-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .gradient-grid,
+            .component-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-title {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .footer {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .page {
+                width: min(100% - 20px, 1180px);
+                padding-top: 18px;
+            }
+
+            nav a {
+                font-size: 0.82rem;
+                padding: 9px 10px;
+            }
+
+            .hero {
+                padding-top: 16px;
+            }
+
+            .palette-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .search-box button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="blur blur-1"></div>
+    <div class="blur blur-2"></div>
+    <div class="blur blur-3"></div>
+
+    <main class="page">
+        <header>
+            <div class="brand">
+                <div class="brand-mark">M</div>
+                <span>Mita</span>
+            </div>
+
+            <nav>
+                <a href="#paleta">Paleta</a>
+                <a href="#gradientes">Gradientes</a>
+                <a href="#componentes">Componentes</a>
+                <a href="#demo">Demo</a>
+            </nav>
+        </header>
+
+        <section class="hero">
+            <div>
+                <div class="eyebrow">
+                    <span class="spark"></span>
+                    El primer agente inmobiliario con IA para Santa Cruz
+                </div>
+
+                <h1>
+                    Encontrá tu próximo hogar con
+                    <span class="gradient-text">Mita.</span>
+                </h1>
+
+                <p class="hero-copy">
+                    Mita convierte publicaciones desordenadas, precios en distintas monedas
+                    y condiciones poco claras en recomendaciones simples, explicadas y listas
+                    para contactar por WhatsApp.
+                </p>
+
+                <div class="hero-actions">
+                    <a class="btn btn-primary" href="#demo">Probar estilo visual</a>
+                    <a class="btn btn-secondary" href="#paleta">Ver paleta</a>
+                </div>
+            </div>
+
+            <aside class="phone">
+                <div class="phone-inner">
+                    <div class="chat-header">
+                        <div class="agent">
+                            <div class="agent-avatar">M</div>
+                            <div>
+                                <strong>Mita AI</strong>
+                                <span>Agente inmobiliario</span>
+                            </div>
+                        </div>
+                        <div class="status"></div>
+                    </div>
+
+                    <div class="bubble bubble-user">
+                        Busco un dpto cerca de Equipetrol o Sirari, máximo 500 dólares,
+                        con garaje y que acepte mascota.
+                    </div>
+
+                    <div class="bubble bubble-ai">
+                        Entendido. Voy a priorizar zona, presupuesto, garaje y mascotas.
+                    </div>
+
+                    <div class="criteria">
+                        <span>Zona <b>Equipetrol / Sirari</b></span>
+                        <span>Presupuesto <b>≤ 500 USD</b></span>
+                        <span>Extras <b>garaje + mascota</b></span>
+                    </div>
+
+                    <div class="mini-card">
+                        <div class="mini-card-top">
+                            <div>
+                                <h3>Dpto 1 dormitorio — Equipetrol</h3>
+                                <p>Buena ubicación, garaje incluido y acepta mascotas pequeñas.</p>
+                            </div>
+                            <span class="match">94%</span>
+                        </div>
+                        <a class="btn btn-primary" style="width:100%; height:44px;" href="#">
+                            Contactar por WhatsApp
+                        </a>
+                    </div>
+                </div>
+            </aside>
+        </section>
+
+        <section id="paleta">
+            <div class="section-title">
+                <h2>Paleta oficial</h2>
+                <p>
+                    Base verde del logo + acentos modernos para comunicar IA, claridad,
+                    confianza y frescura.
+                </p>
+            </div>
+
+            <div class="palette-grid">
+                <div class="swatch bg-green">
+                    <div class="swatch-info">
+                        <strong>Mita Green</strong>
+                        <code>#4FA75A</code>
+                    </div>
+                </div>
+
+                <div class="swatch bg-forest">
+                    <div class="swatch-info">
+                        <strong>Mita Forest</strong>
+                        <code>#2E7D43</code>
+                    </div>
+                </div>
+
+                <div class="swatch bg-soft-leaf dark-label">
+                    <div class="swatch-info">
+                        <strong>Soft Leaf</strong>
+                        <code>#A8D89D</code>
+                    </div>
+                </div>
+
+                <div class="swatch bg-mist dark-label">
+                    <div class="swatch-info">
+                        <strong>Mita Mist</strong>
+                        <code>#DDF1D5</code>
+                    </div>
+                </div>
+
+                <div class="swatch bg-cloud dark-label">
+                    <div class="swatch-info">
+                        <strong>Cloud White</strong>
+                        <code>#F8FAF8</code>
+                    </div>
+                </div>
+
+                <div class="swatch bg-graphite">
+                    <div class="swatch-info">
+                        <strong>Deep Graphite</strong>
+                        <code>#1C1F1D</code>
+                    </div>
+                </div>
+
+                <div class="swatch bg-aqua dark-label">
+                    <div class="swatch-info">
+                        <strong>Aqua Glow</strong>
+                        <code>#7EE6D8</code>
+                    </div>
+                </div>
+
+                <div class="swatch bg-mint dark-label">
+                    <div class="swatch-info">
+                        <strong>Mint Pulse</strong>
+                        <code>#8EF0B5</code>
+                    </div>
+                </div>
+
+                <div class="swatch bg-cyan dark-label">
+                    <div class="swatch-info">
+                        <strong>AI Cyan</strong>
+                        <code>#89D8FF</code>
+                    </div>
+                </div>
+
+                <div class="swatch bg-lavender dark-label">
+                    <div class="swatch-info">
+                        <strong>Lavender Blur</strong>
+                        <code>#B8A7FF</code>
+                    </div>
+                </div>
+
+                <div class="swatch bg-blue-haze dark-label">
+                    <div class="swatch-info">
+                        <strong>Blue Haze</strong>
+                        <code>#C7E8FF</code>
+                    </div>
+                </div>
+
+                <div class="swatch bg-pink dark-label">
+                    <div class="swatch-info">
+                        <strong>Pink Haze</strong>
+                        <code>#F5C8E8</code>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="gradientes">
+            <div class="section-title">
+                <h2>Gradientes y blurs</h2>
+                <p>
+                    Estos gradientes son los que le dan a Mita el look moderno tipo IA:
+                    suaves, luminosos y con profundidad.
+                </p>
+            </div>
+
+            <div class="gradient-grid">
+                <div class="gradient-card g-brand">
+                    <h3>Brand Gradient</h3>
+                    <code>linear-gradient(135deg, #2E7D43, #4FA75A, #8EF0B5)</code>
+                </div>
+
+                <div class="gradient-card g-ai">
+                    <h3>AI Gradient</h3>
+                    <code>linear-gradient(135deg, #7EE6D8, #89D8FF, #B8A7FF)</code>
+                </div>
+
+                <div class="gradient-card g-mita-ai">
+                    <h3>Mita + AI</h3>
+                    <code>linear-gradient(135deg, #4FA75A, #7EE6D8, #89D8FF)</code>
+                </div>
+
+                <div class="gradient-card g-soft">
+                    <h3>Soft Background</h3>
+                    <code>linear-gradient(135deg, #DDF1D5, #C7E8FF, #F3EEFF)</code>
+                </div>
+            </div>
+        </section>
+
+        <section id="componentes">
+            <div class="section-title">
+                <h2>Componentes</h2>
+                <p>
+                    Prueba visual de botones, tarjetas, buscador conversacional y cards con
+                    explicación IA.
+                </p>
+            </div>
+
+            <div class="component-grid">
+                <div class="panel">
+                    <h3>Búsqueda conversacional</h3>
+                    <p>
+                        El usuario no llena veinte filtros. Describe lo que necesita y Mita
+                        interpreta la intención.
+                    </p>
+
+                    <div class="search-box">
+                        <input value="Dpto en Equipetrol, 1 dormitorio, hasta 500 USD" aria-label="Búsqueda" />
+                        <button>Buscar</button>
+                    </div>
+
+                    <div class="property-card">
+                        <div class="property-image"></div>
+                        <div class="property-body">
+                            <div class="mini-card-top">
+                                <div>
+                                    <h4>Dpto amoblado en Equipetrol</h4>
+                                    <p>
+                                        1 dormitorio, garaje incluido, expensas bajas y contacto por WhatsApp.
+                                    </p>
+                                </div>
+                                <span class="match">91%</span>
+                            </div>
+
+                            <div class="tags">
+                                <span class="tag">1 dormitorio</span>
+                                <span class="tag">Garaje</span>
+                                <span class="tag">Amoblado</span>
+                                <span class="tag">Equipetrol</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel ai-card">
+                    <h3>Explicación IA</h3>
+                    <p>
+                        La diferencia visual de Mita debe sentirse como una capa inteligente
+                        encima del mercado inmobiliario.
+                    </p>
+
+                    <div class="insight">
+                        <div class="insight-item">
+                            <strong>Por qué conviene</strong>
+                            <span>
+                                Cumple zona, presupuesto y garaje. Es buena opción si trabajas
+                                cerca de Equipetrol.
+                            </span>
+                        </div>
+
+                        <div class="insight-item">
+                            <strong>Alerta</strong>
+                            <span>
+                                La publicación no confirma si acepta mascotas. Conviene preguntar
+                                antes de agendar visita.
+                            </span>
+                        </div>
+
+                        <div class="insight-item">
+                            <strong>Recomendación</strong>
+                            <span>
+                                Contactar hoy. Las opciones bajo 500 USD en esta zona suelen moverse rápido.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="demo">
+            <div class="footer">
+                <div>
+                    <strong>Mita</strong>
+                    <p>Tu agente inmobiliario con IA para encontrar alquiler en Santa Cruz.</p>
+                </div>
+
+                <a class="btn btn-primary" href="#">Empezar búsqueda</a>
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>
