@@ -15,6 +15,8 @@ function AdminTab({
   importLimit,
   setImportLimit,
   isImporting,
+  importSourceId,
+  setImportSourceId,
   handleRunImport,
   triggerReindex,
   ragStatus
@@ -107,7 +109,7 @@ function AdminTab({
 
           {ragStatus && (
             <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold rounded-2xl animate-pulse">
-              🛠️ {ragStatus}
+              {ragStatus}
             </div>
           )}
 
@@ -121,7 +123,11 @@ function AdminTab({
               <form onSubmit={handleRunImport} className="flex flex-col gap-3">
                 <div>
                   <label className="block text-[10px] text-zinc-400 font-bold uppercase tracking-wider mb-1">Fuente Demo</label>
-                  <select className="w-full bg-zinc-50 border border-zinc-200 p-2.5 rounded-xl text-xs font-semibold text-zinc-700 outline-none">
+                  <select
+                    value={importSourceId}
+                    onChange={(e) => setImportSourceId(Number(e.target.value))}
+                    className="w-full bg-zinc-50 border border-zinc-200 p-2.5 rounded-xl text-xs font-semibold text-zinc-700 outline-none"
+                  >
                     <option value="1">Facebook Marketplace Santa Cruz</option>
                     <option value="2">WhatsApp Inmobiliario de Grupos</option>
                   </select>

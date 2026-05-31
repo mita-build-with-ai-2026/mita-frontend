@@ -17,7 +17,8 @@ import {
   loginAdmin,
   logoutAdmin,
   getCurrentUser,
-  getClientMode
+  getClientMode,
+  checkBackend
 } from './api'
 
 // Shared Components
@@ -36,7 +37,7 @@ import AdminTab from './tabs/AdminTab'
 function App() {
   // ─── Navigation ──────────────────────────────────────────────
   const [currentTab, setCurrentTab] = useState('search')
-  const [clientMode] = useState(() => getClientMode())
+  const [clientMode, setClientMode] = useState(() => getClientMode())
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem('mita_dark') === 'true')
   const [appUser, setAppUser] = useState(() => {
     try {
@@ -85,6 +86,7 @@ function App() {
   const [importUrl, setImportUrl] = useState('https://facebook.com/marketplace/santacruz/alquileres')
   const [importLimit, setImportLimit] = useState(15)
   const [isImporting, setIsImporting] = useState(false)
+  const [importSourceId, setImportSourceId] = useState(1)
   const [ragStatus, setRagStatus] = useState('')
 
   // ─── Detail Modal ─────────────────────────────────────────────
@@ -95,6 +97,11 @@ function App() {
     document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light')
     localStorage.setItem('mita_dark', darkMode)
   }, [darkMode])
+
+  // Detect and update client mode after health check resolves
+  useEffect(() => {
+    checkBackend().then(mode => setClientMode(mode))
+  }, [])
 
   const toggleDarkMode = () => setDarkMode(prev => !prev)
 
@@ -232,7 +239,7 @@ function App() {
   const handleRunImport = (e) => {
     e.preventDefault()
     setIsImporting(true)
-    runImport(1, importUrl, Number(importLimit))
+    runImport(Number(importSourceId), importUrl, Number(importLimit))
       .then(() => { setIsImporting(false); loadAdminData(); loadProperties(); alert('¡Importación completada!') })
       .catch(() => setIsImporting(false))
   }
@@ -347,6 +354,8 @@ function App() {
             importLimit={importLimit}
             setImportLimit={setImportLimit}
             isImporting={isImporting}
+            importSourceId={importSourceId}
+            setImportSourceId={setImportSourceId}
             handleRunImport={handleRunImport}
             triggerReindex={triggerReindex}
             ragStatus={ragStatus}

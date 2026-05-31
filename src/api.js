@@ -210,7 +210,7 @@ const INITIAL_PROPERTIES = [
 // Helper to check if backend is online
 let isSimulationMode = false;
 
-const checkBackend = async () => {
+export const checkBackend = async () => {
   try {
     const res = await fetch(`${API_BASE_URL}/api/health`, { method: 'GET', signal: AbortSignal.timeout(1500) });
     isSimulationMode = !res.ok;
@@ -218,6 +218,7 @@ const checkBackend = async () => {
     isSimulationMode = true;
   }
   console.log(`Mita API client initialized in: ${isSimulationMode ? 'SIMULATION MODE (Fallback)' : 'PRODUCTION MODE (Backend)'}`);
+  return getClientMode();
 };
 
 // Auto run health check
@@ -707,8 +708,8 @@ export const aiEnhanceListing = async (rawText) => {
       '¿Qué rubros de actividad comercial están restringidos por el propietario?'
     ];
 
-    const versionWhatsapp = `📢 *¡NUEVO ESPACIO DISPONIBLE!* 📢\n\n*${titulo}*\n📍 *Ubicación:* ${propertyDraft.zona}, Santa Cruz.\n💵 *Precio:* $${propertyDraft.precio} USD\n📐 *Área:* 60 m²\n\n_${descripcionLimpia}_\n\n📲 *Más información aquí:* wa.me/59178012345`;
-    const versionFacebook = `🔥 ¡OPORTUNIDAD COMERCIAL EN SANTA CRUZ! 🔥\n\nEstás buscando el espacio ideal para operar tu pyme o abrir tu sucursal? Te presentamos este excelente inmueble:\n\n📍 Zona: ${propertyDraft.zona}\n💰 Inversión: $${propertyDraft.precio} USD / mes\n🏢 Tipo: Local Comercial adaptado\n\n✔️ Beneficios clave: ${caracteristicas.join(', ')}.\n❌ Faltan detalles por confirmar: ${informacionFaltante.join(', ')}.\n\nEscríbenos directamente o comenta esta publicación para enviarte los requisitos completos de alquiler.`;
+    const versionWhatsapp = `*¡NUEVO ESPACIO DISPONIBLE!*\n\n*${titulo}*\n*Ubicación:* ${propertyDraft.zona}, Santa Cruz.\n*Precio:* $${propertyDraft.precio} USD\n*Área:* 60 m²\n\n_${descripcionLimpia}_\n\n*Más información aquí:* wa.me/59178012345`;
+    const versionFacebook = `¡OPORTUNIDAD COMERCIAL EN SANTA CRUZ!\n\nEstás buscando el espacio ideal para operar tu pyme o abrir tu sucursal? Te presentamos este excelente inmueble:\n\nZona: ${propertyDraft.zona}\nInversión: $${propertyDraft.precio} USD / mes\nTipo: Local Comercial adaptado\n\nBeneficios clave: ${caracteristicas.join(', ')}.\nFaltan detalles por confirmar: ${informacionFaltante.join(', ')}.\n\nEscríbenos directamente o comenta esta publicación para enviarte los requisitos completos de alquiler.`;
 
     await new Promise(r => setTimeout(r, 1200));
 

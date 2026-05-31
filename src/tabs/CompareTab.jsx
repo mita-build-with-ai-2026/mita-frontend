@@ -1,3 +1,11 @@
+function formatMarkdown(text) {
+  if (!text) return '';
+  const parts = text.split(/\*\*([^*]+)\*\*/g);
+  return parts.map((part, i) => {
+    return i % 2 === 1 ? <strong key={i}>{part}</strong> : part;
+  });
+}
+
 function CompareTab({
   compareQuery,
   setCompareQuery,
@@ -30,7 +38,7 @@ function CompareTab({
               placeholder="Describe qué pretendes instalar o de qué forma utilizarás el espacio físico..."
             />
             <div className="mt-4 p-3.5 bg-[#F8FAF8] border border-[#4FA75A]/20 rounded-2xl text-[11px] text-zinc-500 font-semibold leading-relaxed">
-              💡 <span className="text-[#2E7D43] font-bold">Consejo:</span> Mita comparará aspectos de logística (trifásica, entrada de camiones), exposición comercial (avenidas, tránsito) y costos.
+              <span className="text-[#2E7D43] font-bold">Consejo:</span> Mita comparará aspectos de logística (trifásica, entrada de camiones), exposición comercial (avenidas, tránsito) y costos.
             </div>
           </div>
 
@@ -117,7 +125,7 @@ function CompareTab({
                 <ul className="space-y-2">
                   {comparisonResult.tradeoffs.map((t, idx) => (
                     <li key={idx} className="text-xs text-white/95 leading-relaxed font-semibold flex items-start gap-1.5">
-                      <span className="text-[#8EF0B5] font-black">•</span> <span dangerouslySetInnerHTML={{ __html: t }}></span>
+                      <span className="text-[#8EF0B5] font-black">•</span> <span>{formatMarkdown(t)}</span>
                     </li>
                   ))}
                 </ul>
@@ -125,7 +133,7 @@ function CompareTab({
             </div>
 
             <p className="text-xs text-[#8EF0B5] font-semibold bg-white/10 border border-white/15 p-3 rounded-xl leading-relaxed">
-              💡 {comparisonResult.finalRecommendation}
+              {formatMarkdown(comparisonResult.finalRecommendation)}
             </p>
           </div>
 

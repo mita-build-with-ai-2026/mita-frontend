@@ -66,6 +66,7 @@ body {
 
 /* ── Dark mode surface overrides ───────────────────────── */
 [data-theme="dark"] .bg-white\/70,
+[data-theme="dark"] .bg-white\/75,
 [data-theme="dark"] .bg-white\/50 {
   background-color: var(--bg-surface) !important;
 }
@@ -78,15 +79,22 @@ body {
   background-color: var(--bg-input) !important;
 }
 
+[data-theme="dark"] .bg-zinc-50\/50 {
+  background-color: rgba(26, 36, 28, 0.5) !important;
+}
+
 [data-theme="dark"] .bg-zinc-100 {
   background-color: #1E2A20 !important;
 }
 
+[data-theme="dark"] .border-zinc-100,
 [data-theme="dark"] .border-zinc-200,
-[data-theme="dark"] .border-zinc-200\/80 {
+[data-theme="dark"] .border-zinc-200\/80,
+[data-theme="dark"] .border-zinc-200\/60 {
   border-color: var(--border-subtle) !important;
 }
 
+[data-theme="dark"] .text-zinc-700,
 [data-theme="dark"] .text-zinc-800,
 [data-theme="dark"] .text-zinc-900 {
   color: var(--text-primary) !important;
@@ -95,6 +103,10 @@ body {
 [data-theme="dark"] .text-zinc-600,
 [data-theme="dark"] .text-zinc-500 {
   color: var(--text-secondary) !important;
+}
+
+[data-theme="dark"] .hover\:text-zinc-800:hover {
+  color: #FFFFFF !important;
 }
 
 [data-theme="dark"] .text-zinc-400 {

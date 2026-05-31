@@ -70,9 +70,9 @@ function PropertyDetailModal({ property, onClose }) {
             <div>
               <h2 className="text-xl font-black text-zinc-900 leading-snug">{property.titulo}</h2>
               <div className="flex items-center gap-3 text-xs text-zinc-400 font-bold uppercase mt-1">
-                <span>📍 {property.zona}</span>
+                <span>Zona: {property.zona}</span>
                 <span>•</span>
-                <span>📐 {property.areaM2} m²</span>
+                <span>Área: {property.areaM2} m²</span>
               </div>
             </div>
             <div className="sm:text-right">
@@ -183,7 +183,7 @@ function PropertyDetailModal({ property, onClose }) {
 
             {leadSubmittedUrl && (
               <p className="text-[10px] text-emerald-600 font-bold text-center mt-2.5">
-                ✔ Lead registrado. Si WhatsApp no se abrió automáticamente, <a href={leadSubmittedUrl} target="_blank" rel="noreferrer" className="underline text-emerald-700">haz clic aquí</a>.
+                Lead registrado. Si WhatsApp no se abrió automáticamente, <a href={leadSubmittedUrl} target="_blank" rel="noreferrer" className="underline text-emerald-700">haz clic aquí</a>.
               </p>
             )}
           </div>

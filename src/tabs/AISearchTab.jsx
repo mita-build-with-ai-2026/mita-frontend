@@ -195,7 +195,7 @@ function AISearchTab({
 
                       {/* RAG Explicación */}
                       <p className="text-zinc-600 text-xs font-semibold leading-relaxed bg-[#F8FAF8] border border-zinc-200/50 p-3 rounded-xl mt-3">
-                        💡 <span className="text-zinc-800 font-black">Por qué encaja:</span> {res.resumen}
+                        <span className="text-zinc-800 font-black">Por qué encaja:</span> {res.resumen}
                       </p>
 
                       {/* Razones & Advertencias */}
@@ -216,7 +216,7 @@ function AISearchTab({
                             <ul className="space-y-1">
                               {res.advertencias.slice(0, 2).map((w, i) => (
                                 <li key={i} className="text-[11px] text-zinc-500 font-semibold flex items-start gap-1">
-                                  <span className="text-rose-500 font-bold">⚠</span> {w}
+                                  <span className="text-rose-500 font-bold">!</span> {w}
                                 </li>
                               ))}
                             </ul>
