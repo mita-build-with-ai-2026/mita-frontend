@@ -48,7 +48,7 @@ function EnhanceTab({
           </div>
 
           <div className="mt-6 p-4 bg-[#F8FAF8] border border-[#4FA75A]/20 rounded-2xl text-[11px] text-zinc-500 font-semibold leading-relaxed">
-            📢 **Alerta de valor**: La IA no solo limpia el texto. Te advertirá qué campos le faltan al anuncio (ej. parqueo, luz trifásica) antes de que lo subas a la base de datos oficial.
+            <strong>Alerta de valor</strong>: La IA no solo limpia el texto. Te advertirá qué campos le faltan al anuncio (ej. parqueo, luz trifásica) antes de que lo subas a la base de datos oficial.
           </div>
         </div>
 
@@ -107,7 +107,7 @@ function EnhanceTab({
                 {/* Warnings / Faltantes */}
                 {enhancedResult.informacionFaltante && enhancedResult.informacionFaltante.length > 0 && (
                   <div className="p-3.5 bg-amber-50 border border-amber-200 text-amber-900 rounded-2xl text-[11px] font-semibold mb-4 leading-relaxed">
-                    ⚠️ **Información crítica ausente en el texto original:**
+                    <strong>Información crítica ausente en el texto original:</strong>
                     <ul className="mt-1 space-y-0.5 list-disc pl-4 text-zinc-600 text-[10px]">
                       {enhancedResult.informacionFaltante.map((inf, i) => (
                         <li key={i}>{inf}</li>
