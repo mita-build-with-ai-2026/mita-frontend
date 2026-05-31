@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-mita-green: #4FA75A;
   --color-mita-forest: #2E7D43;
@@ -96,7 +98,8 @@ body {
 
 [data-theme="dark"] .text-zinc-700,
 [data-theme="dark"] .text-zinc-800,
-[data-theme="dark"] .text-zinc-900 {
+[data-theme="dark"] .text-zinc-900,
+[data-theme="dark"] .text-zinc-950 {
   color: var(--text-primary) !important;
 }
 
@@ -128,4 +131,52 @@ body {
 
 .animate-fadeIn {
   animation: fadeIn 0.45s ease forwards;
+}
+
+/* ── AI Loader & Gradient Animations ───────────────────── */
+.bg-gradient-mita-ai {
+  background: linear-gradient(135deg, #4FA75A 0%, #7EE6D8 55%, #89D8FF 100%) !important;
+}
+
+.bg-gradient-ai {
+  background: linear-gradient(135deg, #7EE6D8 0%, #89D8FF 50%, #B8A7FF 100%) !important;
+}
+
+.bg-gradient-pulse {
+  background: linear-gradient(90deg, rgba(79, 167, 90, 0.08) 25%, rgba(126, 230, 216, 0.22) 50%, rgba(79, 167, 90, 0.08) 75%);
+  background-size: 200% 100%;
+  animation: shine 1.6s infinite linear;
+}
+
+[data-theme="dark"] .bg-gradient-pulse {
+  background: linear-gradient(90deg, rgba(28, 38, 30, 0.4) 25%, rgba(126, 230, 216, 0.15) 50%, rgba(28, 38, 30, 0.4) 75%);
+  background-size: 200% 100%;
+  animation: shine 1.6s infinite linear;
+}
+
+@keyframes shine {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.animate-glow {
+  box-shadow: 0 0 35px rgba(126, 230, 216, 0.35);
+}
+
+/* ── Global Form Dark Mode overrides ───────────────────── */
+[data-theme="dark"] input:not(.bg-transparent),
+[data-theme="dark"] select,
+[data-theme="dark"] textarea:not(.bg-transparent) {
+  background-color: var(--bg-input) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-subtle) !important;
+}
+
+[data-theme="dark"] option {
+  background-color: #1A241C !important;
+  color: var(--text-primary) !important;
 }
